@@ -1,24 +1,26 @@
-ServiSIS dashboard restoration patch
+ServiSIS Laravel dashboard restoration patch
 
-Purpose:
-Restore the dashboard structure and visual style based on the original dpz-eims project while using the current Laravel + Inertia data models.
+This patch replaces the current simplified dashboard with the original DPZ-EIMS-style Manager dashboard and a responsive Employee dashboard. It uses the current Laravel User, Attendance, and LeaveRequest models. Document records are shown only if a compatible documents table exists; no sample documents are fabricated.
 
-Files in this patch:
-1. app_DashboardController.php -> replace app/Http/Controllers/DashboardController.php
-2. resources/js/Pages/Dashboard.jsx -> replace the current Dashboard.jsx
-3. resources/css/dashboard.css -> add this file to resources/css/dashboard.css
+FILES TO COPY INTO C:\XAMPP\htdocs\FinalTermLaravel:
+1. app\Http\Controllers\DashboardController.php
+2. resources\js\Pages\Dashboard.jsx
+3. resources\css\dashboard.css
+4. resources\css\app.css
 
-The Dashboard.jsx imports dashboard.css directly, so no app.css change is needed.
+Before copying, make a Git checkpoint:
+  git add -A
+  git commit -m "Checkpoint before dashboard restoration"
 
-Before applying:
-1. Make a Git checkpoint in your actual project folder:
-   git add -A
-   git commit -m "Checkpoint before dashboard restoration"
-2. Copy the three files to the paths above. Rename app_DashboardController.php to DashboardController.php.
-3. Run:
-   npm run build
-   php artisan view:clear
-4. Restart php artisan serve and refresh with Ctrl+F5.
+After copying, run in PowerShell from the project folder:
+  npm run build
+  php artisan view:clear
+  php artisan route:list
+  php artisan serve
 
-Important scope note:
-The original dpz-eims dashboard includes employee documents. The current Laravel project ZIP does not contain document/document-type migrations, models, controllers, or routes, so this patch does not fabricate document data or pretend that feature is migrated. It uses the attendance and leave tables that are present. Document management and reports still need their data schema and feature ports to be completed separately.
+Then open http://127.0.0.1:8000 and sign in. If npm run build reports an error, do not continue; save the full error output.
+
+IMPORTANT NOTES:
+- The current ZIP has no Document model or documents migration, so the dashboard cannot display real document rows until that feature is migrated. It shows an empty state instead of invented records.
+- The app currently gates management pages with the Spatie Manager role. If all existing accounts are Admin, do not change roles blindly or run migrate:fresh. We should inspect the actual users/roles and create or promote a designated Manager account safely in the next step.
+- This patch does not yet migrate the original PHP document upload/download workflow.

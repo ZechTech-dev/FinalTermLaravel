@@ -1,116 +1,66 @@
 import AppLayout from '../Layouts/AppLayout';
 import { Link, usePage } from '@inertiajs/react';
-import '../../../css/dashboard.css';
 
-const time = (value) => {
-    if (!value) return '—';
-    const parts = String(value).split(':');
-    const date = new Date();
-    date.setHours(Number(parts[0]), Number(parts[1]), Number(parts[2] || 0));
-    return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-};
+const num = value => Number(value || 0).toLocaleString();
+const dateText = value => value ? new Date(`${String(value).slice(0, 10)}T12:00:00`).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : '—';
+const timeText = value => value ? String(value).slice(0, 5) : '—';
 
-const dateLabel = (value) => {
-    if (!value) return '—';
-    const d = new Date(`${String(value).slice(0, 10)}T12:00:00`);
-    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-};
+function Stat({ icon, label, value, note, tone = 'blue' }) {
+    return <article className="sis-stat card"><div className={`sis-stat-icon ${tone}`}><i className={`bi ${icon}`} /></div><div className="sis-stat-copy"><span>{label}</span><strong>{num(value)}</strong>{note && <small>{note}</small>}</div></article>;
+}
 
-const statusClass = (status) => String(status || '').toLowerCase().replaceAll(' ', '-');
+function Status({ value }) {
+    const key = String(value || '').toLowerCase().replaceAll(' ', '-');
+    return <span className={`sis-status ${key}`}>{value || '—'}</span>;
+}
 
-export default function Dashboard({ isManager, stats = [], today, todayAttendance, recentAttendance = [], recentLeaves = [], attendanceSummary = {} }) {
+export default function Dashboard({ dashboardRole = 'Employee', employeeName, stats = {}, attendanceSummary = {}, recentAttendance = [], recentDocuments = [], recentLeaves = [], todayAttendance }) {
     const { auth } = usePage().props;
-    const user = auth?.user || {};
-    const name = user.employee_name || user.name || 'User';
-    const total = attendanceSummary.total || 0;
-    const presentPercent = total ? Math.round((attendanceSummary.present / total) * 100) : 0;
+    const manager = dashboardRole === 'Manager';
+    const name = employeeName || auth?.user?.employee_name || auth?.user?.name || 'User';
+    const percent = Math.max(0, Math.min(100, Number(attendanceSummary.presentPercent || 0)));
+    const attendanceRows = Array.isArray(recentAttendance) ? recentAttendance : recentAttendance?.data || [];
+    const documentRows = Array.isArray(recentDocuments) ? recentDocuments : recentDocuments?.data || [];
 
-    return (
-        <AppLayout title="Dashboard">
-            <div className="dashboard-page">
-                <section className="dashboard-top-grid">
-                    <div className="dashboard-welcome">
-                        <div className="dashboard-welcome-icon"><i className={`bi ${isManager ? 'bi-speedometer2' : 'bi-alarm-fill'}`} /></div>
-                        <div>
-                            <p>Welcome back,</p>
-                            <h2>{name}!</h2>
-                            <span>{isManager ? 'Here is your employee management overview.' : "Let's keep up the good work."}</span>
-                        </div>
-                    </div>
-                    {stats.map((stat) => (
-                        <article className="dashboard-stat-card" key={stat.label}>
-                            <div className="dashboard-stat-label"><span className={`dashboard-stat-icon ${stat.tone}`}><i className={`bi ${stat.icon}`} /></span>{stat.label}</div>
-                            <strong>{stat.value}</strong>
-                            <small>{stat.label.includes('Today') || stat.label === 'Present Today' ? today : 'Current summary'}</small>
-                        </article>
-                    ))}
-                </section>
-
-                <section className="dashboard-main-grid">
-                    <article className="dashboard-panel dashboard-attendance-panel">
-                        <div className="dashboard-panel-heading">
-                            <div><h3>{isManager ? 'Recent Attendance Records' : 'My Recent Attendance Records'}</h3><p>{isManager ? 'Latest employee attendance activity' : 'Your latest attendance activity'}</p></div>
-                            <Link href={isManager ? route('attendance.manage') : route('attendance.index')}>View all <i className="bi bi-arrow-up-right" /></Link>
-                        </div>
-                        <div className="dashboard-table-wrap">
-                            <table className="dashboard-table">
-                                <thead><tr>{isManager && <th>Employee</th>}<th>Date</th><th>Time In</th><th>Time Out</th><th>Status</th></tr></thead>
-                                <tbody>
-                                    {recentAttendance.length ? recentAttendance.map((record) => (
-                                        <tr key={record.attendance_id}>
-                                            {isManager && <td><div className="dashboard-employee-cell"><span className="dashboard-mini-avatar">{(record.user?.employee_name || record.user?.name || '?').slice(0, 1).toUpperCase()}</span>{record.user?.employee_name || record.user?.name || 'Employee'}</div></td>}
-                                            <td>{dateLabel(record.date)}</td><td>{time(record.time_in)}</td><td>{time(record.time_out)}</td>
-                                            <td><span className={`dashboard-status ${statusClass(record.status)}`}>{record.status}</span></td>
-                                        </tr>
-                                    )) : <tr><td colSpan={isManager ? 5 : 4} className="dashboard-empty">No attendance records yet.</td></tr>}
-                                </tbody>
-                            </table>
-                        </div>
-                    </article>
-
-                    <article className="dashboard-panel dashboard-summary-panel">
-                        <div className="dashboard-panel-heading"><div><h3>{isManager ? 'Attendance Overview' : 'My Attendance Summary'}</h3><p>Attendance records at a glance</p></div></div>
-                        <div className="dashboard-donut-wrap">
-                            <div className="dashboard-donut" style={{ '--present-percent': `${presentPercent}%` }}><div><strong>{presentPercent}%</strong><span>Present</span></div></div>
-                            <div className="dashboard-legend">
-                                <div><span className="legend-dot present-dot" />Present <strong>{attendanceSummary.present || 0}</strong></div>
-                                <div><span className="legend-dot late-dot" />Late <strong>{attendanceSummary.late || 0}</strong></div>
-                                <div><span className="legend-dot dayoff-dot" />Day Off <strong>{attendanceSummary.dayOff || 0}</strong></div>
-                            </div>
-                        </div>
-                        <div className="dashboard-today-box"><span className="dashboard-today-icon"><i className="bi bi-clock-history" /></span><div><small>Today's time in</small><strong>{time(todayAttendance?.time_in)}</strong></div><span className={`dashboard-status ${statusClass(todayAttendance?.status || 'Not yet timed in')}`}>{todayAttendance?.status || 'Not yet timed in'}</span></div>
-                    </article>
-                </section>
-
-                <section className="dashboard-bottom-grid">
-                    <article className="dashboard-panel">
-                        <div className="dashboard-panel-heading"><div><h3>{isManager ? 'Recent Leave Requests' : 'My Recent Leave Requests'}</h3><p>Latest leave application updates</p></div><Link href={isManager ? route('leave-management.index') : route('leave.index')}>View all <i className="bi bi-arrow-up-right" /></Link></div>
-                        <div className="dashboard-leave-list">
-                            {recentLeaves.length ? recentLeaves.map((leave) => (
-                                <div className="dashboard-leave-row" key={leave.request_id}>
-                                    <span className="dashboard-leave-icon"><i className="bi bi-calendar2-check" /></span>
-                                    <div className="dashboard-leave-info"><strong>{leave.leave_type}</strong><small>{isManager ? (leave.user?.employee_name || leave.user?.name || 'Employee') : `${dateLabel(leave.start_date)} – ${dateLabel(leave.end_date)}`}</small></div>
-                                    <span className={`dashboard-status ${statusClass(leave.status)}`}>{leave.status}</span>
-                                </div>
-                            )) : <p className="dashboard-empty dashboard-empty-block">No leave requests yet.</p>}
-                        </div>
-                    </article>
-
-                    <article className="dashboard-panel">
-                        <div className="dashboard-panel-heading"><div><h3>Quick Links</h3><p>Go directly to a common task</p></div></div>
-                        <div className="dashboard-quick-links">
-                            {isManager ? <>
-                                <Link href={route('employees.index')}><span className="quick-icon blue"><i className="bi bi-people" /></span><span><strong>Employee List</strong><small>View employee records</small></span><i className="bi bi-chevron-right" /></Link>
-                                <Link href={route('attendance.manage')}><span className="quick-icon orange"><i className="bi bi-clock-history" /></span><span><strong>Attendance List</strong><small>Review attendance records</small></span><i className="bi bi-chevron-right" /></Link>
-                                <Link href={route('leave-management.index')}><span className="quick-icon purple"><i className="bi bi-calendar-check" /></span><span><strong>Leave Management</strong><small>Review leave requests</small></span><i className="bi bi-chevron-right" /></Link>
-                            </> : <>
-                                <Link href={route('attendance.index')}><span className="quick-icon blue"><i className="bi bi-clock-history" /></span><span><strong>My Attendance</strong><small>Review attendance history</small></span><i className="bi bi-chevron-right" /></Link>
-                                <Link href={route('leave.index')}><span className="quick-icon purple"><i className="bi bi-calendar-check" /></span><span><strong>My Leave Request</strong><small>View or submit leave requests</small></span><i className="bi bi-chevron-right" /></Link>
-                            </>}
-                        </div>
-                    </article>
-                </section>
+    return <AppLayout title="Dashboard">
+        <section className={`sis-dashboard ${manager ? 'manager-dashboard' : 'employee-dashboard'}`}>
+            <div className="sis-top-grid">
+                <article className="sis-welcome">
+                    <div className="sis-welcome-icon"><i className="bi bi-speedometer2" /></div>
+                    <div><p>Welcome back,</p><h2>{name}!</h2><span>{manager ? 'Here’s your employee management overview.' : 'Let’s keep up the good work.'}</span></div>
+                </article>
+                {manager ? <>
+                    <Stat icon="bi-people-fill" label="EMPLOYEES" value={stats.totalEmployees} note={`${num(stats.activeEmployees)} active employees`} />
+                    <Stat icon="bi-person-check-fill" label="PRESENT TODAY" value={stats.presentToday} note={new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })} tone="blue" />
+                    <Stat icon="bi-clock-history" label="Attendance" value={stats.lateToday} note="Late today" tone="red" />
+                    <article className="sis-stat sis-pending card"><div className="sis-pending-top"><span>Pending Leaves</span><div className="sis-stat-icon"><i className="bi bi-calendar2-check" /></div></div><strong>{num(stats.pendingLeaves)}</strong><small>Requests</small><Link href={route('leave-management.index')}>View details</Link></article>
+                </> : <>
+                    <Stat icon="bi-clock" label="TIME IN" value={todayAttendance?.time_in ? timeText(todayAttendance.time_in) : '—'} note={dateText(todayAttendance?.date)} />
+                    <Stat icon="bi-clock-fill" label="TIME OUT" value={todayAttendance?.time_out ? timeText(todayAttendance.time_out) : '—'} note={todayAttendance?.time_out ? 'Timed out' : 'Not yet timed out'} tone="red" />
+                    <Stat icon="bi-calendar2-check" label="PENDING LEAVES" value={stats.pendingLeaves} note="Requests" />
+                </>}
             </div>
-        </AppLayout>
-    );
+
+            <div className="sis-middle-grid">
+                <section className="sis-panel sis-documents"><div className="sis-panel-heading"><h3>{manager ? 'Recent Employee Documents' : 'My Recent Documents'}</h3><Link href={manager ? (route().has('documents.index') ? route('documents.index') : route('employees.index')) : route('dashboard')}>View All</Link></div>
+                    <div className="sis-table-scroll"><table className="sis-table"><thead><tr>{manager && <th>EMPLOYEE</th>}<th>DOCUMENT</th><th>CATEGORY</th><th>DATE UPLOADED</th></tr></thead><tbody>
+                        {documentRows.length ? documentRows.map((doc, i) => <tr key={doc.id || doc.document_id || i}>{manager && <td>{doc.employee_name || doc.user_name || 'Employee'}</td>}<td><i className="bi bi-file-earmark-text" /> {doc.document_name || doc.original_name || doc.file_name || doc.name || 'Document'}</td><td>{doc.document_type_name || doc.category || doc.document_type || '—'}</td><td>{dateText(doc.uploaded_at || doc.created_at)}</td></tr>) : <tr><td colSpan={manager ? 4 : 3} className="sis-empty">No document records available yet.</td></tr>}
+                    </tbody></table></div>
+                </section>
+                <section className="sis-panel sis-attendance-overview"><div className="sis-panel-heading"><h3>Attendance Overview</h3></div><div className="sis-donut-layout"><div className="sis-donut" style={{ background: `conic-gradient(#0b2e6d 0% ${percent}%, #e5e7eb ${percent}% 100%)` }}><div><strong>{percent}%</strong></div></div><div className="sis-legend"><span><i className="present-dot"/>Present <b>{num(attendanceSummary.present)}</b></span><span><i className="late-dot"/>Late <b>{num(attendanceSummary.late)}</b></span><span><i className="dayoff-dot"/>Day Off <b>{num(attendanceSummary.dayOff)}</b></span></div></div></section>
+            </div>
+
+            <div className="sis-bottom-grid">
+                <section className="sis-panel sis-recent-attendance"><div className="sis-panel-heading"><h3>Recent Attendance Records</h3>{manager && <Link href={route('attendance.manage')}>View All</Link>}</div><div className="sis-table-scroll"><table className="sis-table"><thead><tr>{manager && <th>EMPLOYEE</th>}<th>DATE</th><th>TIME IN</th><th>TIME OUT</th><th>STATUS</th></tr></thead><tbody>
+                    {attendanceRows.length ? attendanceRows.map((row, i) => <tr key={row.attendance_id || i}>{manager && <td>{row.user?.employee_name || row.user?.name || 'Employee'}</td>}<td>{dateText(row.date)}</td><td>{timeText(row.time_in)}</td><td>{timeText(row.time_out)}</td><td><Status value={row.status}/></td></tr>) : <tr><td colSpan={manager ? 5 : 4} className="sis-empty">No attendance records yet.</td></tr>}
+                </tbody></table></div>{!manager && <Link className="sis-text-link" href={route('attendance.index')}>View Full Attendance History</Link>}</section>
+
+                <section className="sis-panel sis-quick-links"><div className="sis-panel-heading"><h3>Quick Links</h3></div><div className="sis-quick-grid">
+                    {manager ? <><Link href={route('employees.index')}><i className="bi bi-people"/><strong>Employee Management</strong><small>Manage employee records</small></Link><Link href={route('attendance.manage')}><i className="bi bi-clock-history"/><strong>Attendance Records</strong><small>View employee attendance</small></Link><Link href={route('leave-management.index')}><i className="bi bi-calendar2-check"/><strong>Leave Requests</strong><small>Review employee leave requests</small></Link></> : <><Link href={route('attendance.index')}><i className="bi bi-clock-history"/><strong>My Attendance</strong><small>View attendance records</small></Link><Link href={route('leave.index')}><i className="bi bi-calendar2-check"/><strong>Leave Requests</strong><small>Submit or review requests</small></Link></>}
+                </div></section>
+
+                <section className="sis-panel sis-system-overview"><div className="sis-panel-heading"><h3>{manager ? 'System Overview' : 'My Summary'}</h3></div>{manager ? <dl><div><dt>Total Employees</dt><dd>{num(stats.totalEmployees)}</dd></div><div><dt>Active Employees</dt><dd>{num(stats.activeEmployees)}</dd></div><div><dt>Total Documents</dt><dd>{num(stats.totalDocuments)}</dd></div></dl> : <dl><div><dt>Late this month</dt><dd>{num(stats.lateCount)}</dd></div><div><dt>Pending leave requests</dt><dd>{num(stats.pendingLeaves)}</dd></div><div><dt>Days present</dt><dd>{num(attendanceSummary.present)}</dd></div></dl>}</section>
+            </div>
+        </section>
+    </AppLayout>;
 }

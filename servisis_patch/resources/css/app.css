@@ -1,0 +1,13 @@
+/*
+ | ServiSIS styles (ported from the original dpz-eims project).
+ | Tailwind was removed on purpose: the React pages use the original
+ | class names, and Tailwind's reset would change how they look.
+*/
+@import './base.css';
+@import './sidebar.css';
+@import './header.css';
+@import './footer.css';
+@import './login.css';
+@import './extras.css';
+
+@import './dashboard.css';
