@@ -27,7 +27,7 @@
 .page-content textarea { min-height: 90px; resize: vertical; }
 .page-content small, .error { color: #dc3545; font-size: 12px; font-weight: 500; }
 
-.page-content button, .attendance-actions button {
+.page-content button {
     padding: 10px 18px; border: none; border-radius: 9px; background: #165ac7; color: #fff;
     font: inherit; font-weight: 600; cursor: pointer; transition: background .2s;
 }
@@ -35,7 +35,6 @@
 .page-content button:disabled { background: #b8c4d6; cursor: not-allowed; }
 .page-content form[class=""] { display: flex; gap: 10px; }
 
-.attendance-actions { display: flex; flex-wrap: wrap; gap: 12px; }
 .filter-row { display: flex; flex-wrap: wrap; gap: 16px; }
 
 .table-wrap { background: #fff; border: 1px solid #dce5f0; border-radius: 14px; overflow-x: auto; box-shadow: 0 3px 12px rgba(15, 43, 77, .06); }

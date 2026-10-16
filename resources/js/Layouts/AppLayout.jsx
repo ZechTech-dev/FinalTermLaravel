@@ -65,16 +65,10 @@ export default function AppLayout({ children, title = 'Dashboard' }) {
                             )}
 
                             {role === 'Employee' && (
-                                <>
-                                    <Link href={route('attendance.manage')} className={active('/attendance-management')}>
-                                        <i className="bi bi-list-check"></i>
-                                        <span>Attendance List</span>
-                                    </Link>
-                                    <Link href={route('leave.index')} className={active('/leave')}>
-                                        <i className="bi bi-file-earmark-text"></i>
-                                        <span>My Leave Request</span>
-                                    </Link>
-                                </>
+                                <Link href={route('leave.index')} className={active('/leave')}>
+                                    <i className="bi bi-file-earmark-text"></i>
+                                    <span>My Leave Request</span>
+                                </Link>
                             )}
                         </div>
                     </nav>
@@ -110,10 +104,12 @@ export default function AppLayout({ children, title = 'Dashboard' }) {
             </header>
 
             <main className="content">
-                {flash?.success && <div className="flash success">{flash.success}</div>}
-                {flash?.error && <div className="flash error">{flash.error}</div>}
+                <div className="content-body">
+                    {flash?.success && <div className="flash success">{flash.success}</div>}
+                    {flash?.error && <div className="flash error">{flash.error}</div>}
 
-                {children}
+                    {children}
+                </div>
 
                 <footer className="app-footer">
                     <div className="footer-brand">

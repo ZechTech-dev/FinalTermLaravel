@@ -17,7 +17,7 @@ class Attendance extends Model
 
     protected function casts(): array
     {
-        return ['date' => 'date', 'break_hours' => 'decimal:2', 'total_hours' => 'decimal:2', 'overtime_hours' => 'decimal:2'];
+        return ['date' => 'date:Y-m-d', 'break_hours' => 'decimal:2', 'total_hours' => 'decimal:2', 'overtime_hours' => 'decimal:2'];
     }
 
     public function user(): BelongsTo

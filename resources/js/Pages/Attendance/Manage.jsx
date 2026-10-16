@@ -36,7 +36,6 @@ export default function Manage({ attendance, filters = {} }) {
     return <AppLayout title="Attendance Management">
         <Head title="Attendance List" />
         <section className="attendance-management-page">
-            <div className="space" /><div className="space" /><div className="space" /><div className="space" />
             <div className="list-header">
                 <div className="left">
                     <div className="cover"><i className="bi bi-calendar2-check-fill" /></div>
@@ -48,7 +47,7 @@ export default function Manage({ attendance, filters = {} }) {
                     <button type="submit" className="attendance-search-button">Search</button>
                 </form>
             </div>
-            <div className="space" />
+            <div className="attendance-table-wrap">
             <table className="attendance-list">
                 <thead><tr><th>Employee ID</th><th>Employee</th><th>Date</th><th>Time In</th><th>Break In</th><th>Break Out</th><th>Time Out</th><th>Total Hours</th><th>Status</th></tr></thead>
                 <tbody>
@@ -61,6 +60,7 @@ export default function Manage({ attendance, filters = {} }) {
                 </tbody>
                 <tfoot><tr><td colSpan="9"><Pagination links={attendance?.links || []} /></td></tr></tfoot>
             </table>
+            </div>
         </section>
     </AppLayout>;
 }

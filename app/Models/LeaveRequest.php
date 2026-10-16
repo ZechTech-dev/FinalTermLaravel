@@ -16,7 +16,7 @@ class LeaveRequest extends Model
 
     protected function casts(): array
     {
-        return ['start_date' => 'date', 'end_date' => 'date', 'applied_at' => 'datetime'];
+        return ['start_date' => 'date:Y-m-d', 'end_date' => 'date:Y-m-d', 'applied_at' => 'datetime:Y-m-d H:i'];
     }
 
     public function user(): BelongsTo

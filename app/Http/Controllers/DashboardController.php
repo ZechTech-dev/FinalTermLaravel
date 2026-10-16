@@ -18,19 +18,20 @@ class DashboardController extends Controller
         $employeeQuery = User::query()->where('role', 'Employee');
         $totalEmployees = (clone $employeeQuery)->count();
         $activeEmployees = (clone $employeeQuery)->where('status', 'Active')->count();
+        $scope = fn ($q) => $isManager ? $q : $q->where('user_id', $user->id);
         $todayAttendance = Attendance::whereDate('date', $today);
         $presentToday = (clone $todayAttendance)->where('status', 'Present')->count();
         $lateToday = (clone $todayAttendance)->where('status', 'Late')->count();
-        $pendingLeaves = LeaveRequest::where('status', 'Pending')->count();
+        $pendingLeaves = $scope(LeaveRequest::where('status', 'Pending'))->count();
 
-        $recentAttendance = Attendance::with('user')->orderByDesc('date')->orderByDesc('time_in')->limit(5)->get()->map(fn ($a) => [
+        $recentAttendance = $scope(Attendance::with('user'))->orderByDesc('date')->orderByDesc('time_in')->limit(5)->get()->map(fn ($a) => [
             'name' => $a->user?->employee_name ?? $a->user?->name ?? '—',
             'date' => $a->date?->format('F j, Y') ?? '—',
             'time_in' => $a->time_in ? date('h:i A', strtotime($a->time_in)) : '—',
             'time_out' => $a->time_out ? date('h:i A', strtotime($a->time_out)) : '—',
             'status' => $a->status ?? '—',
         ]);
-        $summary = Attendance::query()->selectRaw("SUM(status = 'Present') as present_count, SUM(status = 'Late') as late_count, SUM(status = 'Day Off') as dayoff_count, COUNT(*) as total_count")->first();
+        $summary = $scope(Attendance::query())->selectRaw("SUM(status = 'Present') as present_count, SUM(status = 'Late') as late_count, SUM(status = 'Day Off') as dayoff_count, COUNT(*) as total_count")->first();
         $presentCount = (int) ($summary->present_count ?? 0);
         $lateCount = (int) ($summary->late_count ?? 0);
         $dayOffCount = (int) ($summary->dayoff_count ?? 0);
@@ -62,6 +63,7 @@ class DashboardController extends Controller
                 'presentToday' => $presentToday,
                 'lateToday' => $lateToday,
                 'pendingLeaves' => $pendingLeaves,
+                'daysPresent' => $user->attendances()->whereIn('status', ['Present', 'Late'])->count(),
             ],
             'attendanceSummary' => [
                 'present' => $presentCount,

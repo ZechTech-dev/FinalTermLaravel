@@ -378,3 +378,23 @@
         margin: 0;
     }
 }
+
+
+/* Keep the table separated from its header without changing the original palette. */
+.attendance-management-page{width:100%;box-sizing:border-box;padding:0 20px 20px}
+.attendance-management-page .list-header{margin-bottom:20px}
+.attendance-table-wrap{width:100%;margin-top:0;overflow-x:auto;border-radius:14px}
+.attendance-management-page .attendance-list{margin:0;min-width:900px}
+.attendance-management-page .attendance-list th{padding:16px 18px;white-space:nowrap}
+.attendance-management-page .attendance-list td{padding:15px 18px;white-space:nowrap}
+@media(max-width:700px){.attendance-management-page{padding:0 8px 14px}.attendance-management-page .list-header{gap:12px;padding:16px;flex-wrap:wrap}.attendance-management-page .employee-search{width:100%;max-width:100%;flex:1}.attendance-table-wrap{border-radius:10px}}
+
+/* Force a visible gap between the page heading and the attendance table. */
+.attendance-management-page .list-header{margin-bottom:28px!important}
+.attendance-management-page .attendance-table-wrap{display:block;margin-top:0!important;clear:both;position:relative}
+.attendance-management-page .attendance-list{border-collapse:separate;border-spacing:0}
+
+/* Keep a clearly visible gap between the navy Attendance List banner and table. */
+.attendance-management-page .list-header{margin-bottom:18px!important}
+.attendance-management-page .attendance-table-wrap{margin-top:0!important}
+.attendance-management-page .attendance-list{border-radius:14px;overflow:hidden}

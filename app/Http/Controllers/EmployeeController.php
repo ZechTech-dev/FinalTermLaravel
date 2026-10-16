@@ -6,6 +6,7 @@ use App\Models\Department;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 
@@ -69,7 +70,7 @@ class EmployeeController extends Controller
             'role' => ['required', Rule::in(['Manager', 'Employee'])],
             'department_id' => ['required', 'exists:departments,department_id'],
             'status' => ['required', Rule::in(['Active', 'Inactive'])],
-            'hire_date' => ['required', 'date'],
+            'hire_date' => ['nullable', 'date'],
             'password' => ['nullable', 'string', 'min:8'],
             'profile_picture' => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:5120'],
         ]);
@@ -81,7 +82,11 @@ class EmployeeController extends Controller
             $data['password'] = Hash::make($data['password']);
         }
         if ($request->hasFile('profile_picture')) {
+            $oldPicture = $employee->profile_picture;
             $data['profile_picture'] = $request->file('profile_picture')->store('profiles', 'public');
+            if ($oldPicture && $oldPicture !== 'default-picture.jpg' && !str_starts_with($oldPicture, 'http')) {
+                Storage::disk('public')->delete($oldPicture);
+            }
         } else {
             unset($data['profile_picture']);
         }

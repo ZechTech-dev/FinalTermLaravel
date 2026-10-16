@@ -12,7 +12,7 @@ class LeaveManagementController extends Controller
     public function index()
     {
         return Inertia::render('Leave/Manage', [
-            'requests' => LeaveRequest::with(['user', 'approver'])->latest('applied_at')->paginate(15),
+            'requests' => LeaveRequest::with(['user', 'approver'])->latest('applied_at')->paginate(15)->withQueryString(),
         ]);
     }
 
@@ -23,11 +23,13 @@ class LeaveManagementController extends Controller
             'decision_reason' => ['nullable', 'string', 'max:2000', Rule::requiredIf($request->input('status') === 'Rejected')],
         ]);
 
-        abort_if($leaveRequest->status !== 'Pending', 422, 'Only pending requests can be decided.');
+        if ($leaveRequest->status === $data['status']) {
+            return back()->with('error', 'This request is already ' . strtolower($data['status']) . '.');
+        }
 
         $leaveRequest->update([
             'status' => $data['status'],
-            'decision_reason' => $data['decision_reason'] ?? null,
+            'decision_reason' => $data['status'] === 'Rejected' ? ($data['decision_reason'] ?? null) : null,
             'approved_by' => auth()->id(),
         ]);
 
