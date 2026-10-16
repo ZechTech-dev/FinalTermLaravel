@@ -1,0 +1,205 @@
+/* Copied from dpz-eims/assets/css/components/header.css */
+.main-header{
+    position:fixed;
+    top:0;
+    left:270px;
+    right:0;
+    width:auto;
+    height:70px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 22px;
+    background:#fff;
+    border-bottom:1px solid #dce5f0;
+    box-shadow:0 3px 12px rgba(15,43,77,.08);
+    z-index:900;
+}
+
+.servisis-page-heading{
+    min-width:0;
+    display:flex;
+    align-items:center;
+    gap:9px;
+}
+
+.servisis-page-heading h1{
+    margin:0;
+    color:#102a52;
+    font-family:"Outfit",sans-serif;
+    font-size:20px;
+    font-weight:700;
+    line-height:1;
+}
+
+.servisis-page-heading span{
+    padding-left:9px;
+    border-left:1px solid #d8e0eb;
+    color:#7b8ba1;
+    font-family:Arial,Helvetica,sans-serif;
+    font-size:10px;
+    line-height:1;
+}
+
+.servisis-header-right{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.servisis-notification-btn{
+    position:relative;
+    width:34px;
+    height:34px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:1px solid #dbe4ef;
+    border-radius:9px;
+    background:#f8faff;
+    color:#52657f;
+    font-size:14px;
+    cursor:pointer;
+    box-shadow:0 2px 5px rgba(15,43,77,.05);
+    transition:.2s ease;
+}
+
+.servisis-notification-btn:hover{
+    background:#eaf2ff;
+    border-color:#c8daf5;
+    color:#165ac7;
+    box-shadow:0 3px 8px rgba(22,90,199,.12);
+}
+
+.servisis-notification-badge{
+    position:absolute;
+    top:-4px;
+    right:-4px;
+    min-width:15px;
+    height:15px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:0 3px;
+    border:2px solid #fff;
+    border-radius:20px;
+    background:#ef4444;
+    color:#fff;
+    font-family:Arial,Helvetica,sans-serif;
+    font-size:7px;
+    font-weight:700;
+    line-height:1;
+    box-shadow:0 1px 4px rgba(239,68,68,.25);
+}
+
+.servisis-header-divider{
+    width:1px;
+    height:28px;
+    background:#dfe6ef;
+}
+
+.servisis-header-user{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:3px 7px 3px 4px;
+    border:1px solid transparent;
+    border-radius:9px;
+    cursor:pointer;
+    transition:.2s ease;
+}
+
+.servisis-header-user:hover{
+    background:#f5f8fc;
+    border-color:#e4eaf2;
+}
+
+.servisis-user-avatar{
+    width:30px;
+    height:30px;
+    min-width:30px;
+    max-width:30px;
+    overflow:hidden;
+    border-radius:50%;
+    border:2px solid #fff;
+    background:#e8eef7;
+    box-shadow:0 2px 8px rgba(15,43,77,.18);
+}
+
+.servisis-user-avatar img{
+    display:block;
+    width:100%;
+    height:100%;
+    max-width:100%;
+    max-height:100%;
+    object-fit:cover;
+}
+
+.servisis-user-info{
+    min-width:0;
+    max-width:120px;
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+}
+
+.servisis-user-info strong{
+    overflow:hidden;
+    color:#243b5a;
+    font-family:Arial,Helvetica,sans-serif;
+    font-size:11px;
+    font-weight:600;
+    line-height:1.2;
+    white-space:nowrap;
+    text-overflow:ellipsis;
+}
+
+.servisis-user-info small{
+    overflow:hidden;
+    color:#8795a8;
+    font-family:Arial,Helvetica,sans-serif;
+    font-size:9px;
+    line-height:1.2;
+    white-space:nowrap;
+    text-overflow:ellipsis;
+}
+
+.servisis-user-arrow{
+    color:#8b99ab;
+    font-size:9px;
+}
+
+.main-content{
+    margin-left:270px;
+    padding-top:56px;
+    min-height:100vh;
+}
+
+@media(max-width:900px){
+    .main-header{
+        left:250px;
+    }
+
+    .main-content{
+        margin-left:250px;
+    }
+
+    .servisis-user-info{
+        display:none;
+    }
+}
+
+@media(max-width:480px){
+    .main-header{
+        left:240px;
+        padding:0 12px;
+    }
+
+    .main-content{
+        margin-left:240px;
+    }
+
+    .servisis-page-heading span{
+        display:none;
+    }
+}   

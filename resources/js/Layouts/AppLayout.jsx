@@ -1,14 +1,22 @@
-import { Link, usePage } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 
 export default function AppLayout({ children, title = 'Dashboard' }) {
-    const { auth } = usePage().props;
-    const user = auth?.user;
-    const role = user?.role || user?.roles?.[0]?.name;
+    const page = usePage();
+    const { auth, flash } = page.props;
 
-    const linkClass = 'side-link';
+    const user = auth?.user;
+    const role = user?.role;
+    const path = (page.url || '').split('?')[0];
+    const active = (p) => (path === p || path.startsWith(p + '/') ? 'active' : '');
+
+    const picture = !user?.profile_picture || user.profile_picture === 'default-picture.jpg'
+        ? '/assets/src/default-picture.jpg'
+        : `/storage/${user.profile_picture}`;
 
     return (
-        <div className="app-shell">
+        <>
+            <Head title={title} />
+
             <aside className="sidebar">
                 <div className="side-top">
                     <div className="profile">
@@ -19,33 +27,106 @@ export default function AppLayout({ children, title = 'Dashboard' }) {
                         <span className="logo-subtitle">Staff Information System</span>
                     </div>
                 </div>
-                <nav className="side-nav">
-                    <div className="nav-section-title">MAIN</div>
-                    <Link className={linkClass} href={route('dashboard')}> <i className="bi bi-house-door-fill" /> Dashboard</Link>
-                    <Link className={linkClass} href={route('attendance.index')}><i className="bi bi-clock-history" /> Attendance</Link>
-                    <div className="nav-section-title">MANAGEMENT</div>
-                    {role === 'Manager' ? (
-                        <>
-                            <Link className={linkClass} href={route('attendance.manage')}><i className="bi bi-list-check" /> Attendance List</Link>
-                            <Link className={linkClass} href={route('employees.index')}><i className="bi bi-card-checklist" /> Employee List</Link>
-                            <Link className={linkClass} href={route('leave-management.index')}><i className="bi bi-calendar2-check" /> Leave Management</Link>
-                        </>
-                    ) : (
-                        <>
-                            <Link className={linkClass} href={route('leave.index')}><i className="bi bi-file-earmark-text" /> My Leave Request</Link>
-                        </>
-                    )}
-                    <Link className={linkClass} href={route('logout')} method="post" as="button"><i className="bi bi-box-arrow-right" /> Logout</Link>
-                </nav>
-                <div className="sidebar-bottom">
-                    <img src={user?.profile_picture ? `/storage/${user.profile_picture}` : '/assets/src/default-picture.jpg'} alt="" />
-                    <span>{user?.employee_name || user?.name}</span>
+
+                <div className="wrapper">
+                    <nav className="side-nav">
+                        <div className="navigation">
+                            <div className="nav-section-title">MAIN</div>
+
+                            <Link href={route('dashboard')} className={active('/dashboard')}>
+                                <i className="bi bi-house-door-fill"></i>
+                                <span>Dashboard</span>
+                            </Link>
+
+                            {role === 'Employee' && (
+                                <Link href={route('attendance.index')} className={active('/attendance')}>
+                                    <i className="bi bi-clock-history"></i>
+                                    <span>Attendance</span>
+                                </Link>
+                            )}
+
+                            <div className="nav-section-title">MANAGEMENT</div>
+
+                            {role === 'Manager' && (
+                                <>
+                                    <Link href={route('attendance.manage')} className={active('/attendance-management')}>
+                                        <i className="bi bi-list-check"></i>
+                                        <span>Attendance List</span>
+                                    </Link>
+                                    <Link href={route('employees.index')} className={active('/employees')}>
+                                        <i className="bi bi-card-checklist"></i>
+                                        <span>Employee List</span>
+                                    </Link>
+                                    <Link href={route('leave-management.index')} className={active('/leave-management')}>
+                                        <i className="bi bi-calendar2-check"></i>
+                                        <span>Leave Management</span>
+                                    </Link>
+                                </>
+                            )}
+
+                            {role === 'Employee' && (
+                                <Link href={route('leave.index')} className={active('/leave')}>
+                                    <i className="bi bi-file-earmark-text"></i>
+                                    <span>My Leave Request</span>
+                                </Link>
+                            )}
+                        </div>
+                    </nav>
+
+                    <div className="sidebar-city">
+                        <img src="/assets/src/bg.png" alt="" />
+                    </div>
+
+                    <div className="sidebar-bottom">
+                        <div className="user-info">
+                            <div className="profile">
+                                <img src={picture} alt="Profile" />
+                            </div>
+                            <div className="user-details">
+                                <h6>{user?.employee_name || user?.name}</h6>
+                                <small>{role}</small>
+                            </div>
+                        </div>
+
+                        <Link href={route('logout')} method="post" as="button" className="logout-btn">
+                            <i className="bi bi-box-arrow-left"></i>
+                            <span>Logout</span>
+                        </Link>
+                    </div>
                 </div>
             </aside>
-            <main className="main-content">
-                <header className="page-header"><h1>{title}</h1></header>
+
+            <header className="main-header">
+                <div className="servisis-page-heading">
+                    <h1>{title}</h1>
+                    <span>Staff Information System</span>
+                </div>
+            </header>
+
+            <main className="content">
+                {flash?.success && <div className="flash success">{flash.success}</div>}
+                {flash?.error && <div className="flash error">{flash.error}</div>}
+
                 {children}
+
+                <footer className="app-footer">
+                    <div className="footer-brand">
+                        <div className="footer-icon"><i className="bi bi-shield-check"></i></div>
+                        <div className="footer-brand-text">
+                            <span className="footer-copy">&copy; {new Date().getFullYear()} ServiSIS</span>
+                            <span className="footer-tagline">Staff Information System</span>
+                        </div>
+                    </div>
+                    <div className="footer-credits">
+                        <span className="footer-credits-label">Developed by</span>
+                        <div className="footer-names">
+                            <div className="footer-name"><div className="footer-avatar">JM</div><span>Jer Zechariah Madriaga</span></div>
+                            <div className="footer-name"><div className="footer-avatar">KM</div><span>Princess Katheleen Misa</span></div>
+                            <div className="footer-name"><div className="footer-avatar">DG</div><span>Denisse Sharlyne Galit</span></div>
+                        </div>
+                    </div>
+                </footer>
             </main>
-        </div>
+        </>
     );
 }

@@ -1,0 +1,65 @@
+/* Styles for the React pages that do not have a ported old stylesheet yet
+   (Employees, Leave, Attendance, Dashboard). Same palette as the old project. */
+
+.page-content { display: flex; flex-direction: column; gap: 18px; flex: 1; }
+.page-content h2 { color: #102a52; font-size: 18px; }
+
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 16px; }
+.stat-card {
+    background: #fff; border: 1px solid #dce5f0; border-radius: 14px; padding: 18px 20px;
+    box-shadow: 0 3px 12px rgba(15, 43, 77, .06); display: flex; flex-direction: column; gap: 6px;
+}
+.stat-card span { color: #7b8ba1; font-size: 13px; text-transform: capitalize; }
+.stat-card strong { color: #165ac7; font-size: 28px; }
+
+.employee-form, .leave-form {
+    background: #fff; border: 1px solid #dce5f0; border-radius: 14px; padding: 20px;
+    box-shadow: 0 3px 12px rgba(15, 43, 77, .06); display: flex; flex-direction: column; gap: 14px;
+}
+.form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+.page-content label { display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600; color: #102a52; }
+.page-content input, .page-content select, .page-content textarea {
+    padding: 10px 12px; border: 1px solid #cfd8e6; border-radius: 9px; font: inherit; font-weight: 400; background: #fff;
+}
+.page-content input:focus, .page-content select:focus, .page-content textarea:focus {
+    outline: none; border-color: #165ac7; box-shadow: 0 0 0 3px rgba(22, 90, 199, .15);
+}
+.page-content textarea { min-height: 90px; resize: vertical; }
+.page-content small, .error { color: #dc3545; font-size: 12px; font-weight: 500; }
+
+.page-content button, .attendance-actions button {
+    padding: 10px 18px; border: none; border-radius: 9px; background: #165ac7; color: #fff;
+    font: inherit; font-weight: 600; cursor: pointer; transition: background .2s;
+}
+.page-content button:hover:not(:disabled) { background: #0a3479; }
+.page-content button:disabled { background: #b8c4d6; cursor: not-allowed; }
+.page-content form[class=""] { display: flex; gap: 10px; }
+
+.attendance-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.filter-row { display: flex; flex-wrap: wrap; gap: 16px; }
+
+.table-wrap { background: #fff; border: 1px solid #dce5f0; border-radius: 14px; overflow-x: auto; box-shadow: 0 3px 12px rgba(15, 43, 77, .06); }
+.table-wrap table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.table-wrap th { background: #f0f4fb; color: #102a52; text-align: left; padding: 12px 14px; font-weight: 700; white-space: nowrap; }
+.table-wrap td { padding: 12px 14px; border-top: 1px solid #edf1f7; color: #34445c; }
+.table-wrap tbody tr:hover { background: #f8faff; }
+
+nav.pagination { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+nav.pagination a, nav.pagination span {
+    padding: 7px 12px; border: 1px solid #dce5f0; border-radius: 8px; background: #fff; color: #165ac7;
+    font-size: 13px; text-decoration: none;
+}
+nav.pagination a.active { background: #165ac7; color: #fff; border-color: #165ac7; }
+nav.pagination span.disabled { color: #aab6c8; }
+
+.flash {
+    padding: 12px 16px; border-radius: 10px; margin-bottom: 16px; font-size: 14px; font-weight: 600;
+}
+.flash.success { background: #e6f6ec; color: #17703a; border: 1px solid #b7e3c5; }
+.flash.error { background: #fdeaea; color: #a52a36; border: 1px solid #f5c2c7; }
+
+/* the logout "button" in the sidebar is a real <button> */
+.sidebar .logout-btn { cursor: pointer; }
+
+/* extra bits for the login page */
+.login-root .login-btn { cursor: pointer; }
