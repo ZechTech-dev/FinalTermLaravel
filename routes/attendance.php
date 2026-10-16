@@ -12,4 +12,4 @@ Route::middleware(['auth', 'role:Employee|Manager'])->prefix('attendance')->name
     Route::post('/time-out', [AttendanceController::class, 'timeOut'])->name('time-out');
 });
 
-Route::middleware(['auth', 'role:Employee|Manager'])->get('/attendance-management', [AttendanceManagementController::class, 'index'])->name('attendance.manage');
+Route::middleware(['auth', 'role:Manager'])->get('/attendance-management', [AttendanceManagementController::class, 'index'])->name('attendance.manage');

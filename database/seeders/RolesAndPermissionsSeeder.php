@@ -13,14 +13,14 @@ class RolesAndPermissionsSeeder extends Seeder
     {
         app(PermissionRegistrar::class)->forgetCachedPermissions();
 
-        foreach (['employees.manage', 'attendance.manage', 'leave.manage'] as $permission) {
+        foreach (['employees.manage', 'attendance.manage', 'leave.manage', 'documents.manage'] as $permission) {
             Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'web']);
         }
 
         $manager = Role::firstOrCreate(['name' => 'Manager', 'guard_name' => 'web']);
         $employee = Role::firstOrCreate(['name' => 'Employee', 'guard_name' => 'web']);
 
-        $manager->syncPermissions(['employees.manage', 'attendance.manage', 'leave.manage']);
+        $manager->syncPermissions(['employees.manage', 'attendance.manage', 'leave.manage', 'documents.manage']);
         $employee->syncPermissions([]);
     }
 }

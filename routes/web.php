@@ -12,3 +12,4 @@ Route::middleware('auth')->get('/dashboard', [DashboardController::class, 'index
 require __DIR__ . '/employees.php';
 require __DIR__ . '/attendance.php';
 require __DIR__ . '/leave.php';
+require __DIR__ . '/documents.php';

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { router } from '@inertiajs/react';
 import AppLayout from '../../Layouts/AppLayout';
 import Pagination from '../../Components/Pagination';
+import '../../../css/leave-management.css';
 
 const d10 = (v) => (v ? String(v).slice(0, 10) : '');
 const fmt = (v) => {
@@ -58,9 +59,9 @@ export default function Manage({ requests }) {
                                         <td className="reason">{r.reason}</td>
                                         <td><span className={`pg-pill ${String(r.status).toLowerCase()}`}>{r.status}</span></td>
                                         <td>
-                                            <div className="pg-actions">
-                                                {r.status !== 'Approved' && <button type="button" className="pg-btn success sm" disabled={busy} onClick={() => decide(r, 'Approved')}><i className="bi bi-check-lg" /> {r.status === 'Pending' ? 'Approve' : 'Change to Approved'}</button>}
-                                                {r.status !== 'Rejected' && <button type="button" className="pg-btn danger sm" disabled={busy} onClick={() => { setRejecting(r); setReason(''); setError(''); }}><i className="bi bi-x-lg" /> {r.status === 'Pending' ? 'Reject' : 'Change to Rejected'}</button>}
+                                            <div className="pg-actions leave-decision-actions">
+                                                {r.status !== 'Approved' && <button type="button" className="pg-btn success sm leave-approve-btn" disabled={busy || r.status === 'Approved'} onClick={() => decide(r, 'Approved')}><i className="bi bi-check-lg" /> {r.status === 'Pending' ? 'Approve' : 'Change to Approved'}</button>}
+                                                {r.status !== 'Rejected' && <button type="button" className="pg-btn danger sm leave-reject-btn" disabled={busy || r.status === 'Rejected'} onClick={() => { setRejecting(r); setReason(''); setError(''); }}><i className="bi bi-x-lg" /> {r.status === 'Pending' ? 'Reject' : 'Change to Rejected'}</button>}
                                             </div>
                                             {r.status === 'Rejected' && r.decision_reason && <small style={{ display: 'block', marginTop: 6, color: '#b3262f' }}>{r.decision_reason}</small>}
                                             </td>

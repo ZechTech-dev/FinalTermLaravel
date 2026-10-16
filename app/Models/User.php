@@ -38,4 +38,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(LeaveRequest::class, 'user_id');
     }
+
+    public function documents(): HasMany
+    {
+        return $this->hasMany(Document::class, 'user_id');
+    }
 }

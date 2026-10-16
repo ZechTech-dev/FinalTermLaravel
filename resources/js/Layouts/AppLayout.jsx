@@ -61,14 +61,24 @@ export default function AppLayout({ children, title = 'Dashboard' }) {
                                         <i className="bi bi-calendar2-check"></i>
                                         <span>Leave Management</span>
                                     </Link>
+                                    <Link href={route('document-management.index')} className={active('/document-management')}>
+                                        <i className="bi bi-folder2-open"></i>
+                                        <span>Document Management</span>
+                                    </Link>
                                 </>
                             )}
 
                             {role === 'Employee' && (
+                                <>
+                                <Link href={route('documents.index')} className={active('/documents')}>
+                                    <i className="bi bi-cloud-arrow-up"></i>
+                                    <span>My Documents</span>
+                                </Link>
                                 <Link href={route('leave.index')} className={active('/leave')}>
                                     <i className="bi bi-file-earmark-text"></i>
                                     <span>My Leave Request</span>
                                 </Link>
+                                </>
                             )}
                         </div>
                     </nav>
