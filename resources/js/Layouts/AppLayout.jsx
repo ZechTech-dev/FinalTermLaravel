@@ -38,12 +38,12 @@ export default function AppLayout({ children, title = 'Dashboard' }) {
                                 <span>Dashboard</span>
                             </Link>
 
-                            {role === 'Employee' && (
-                                <Link href={route('attendance.index')} className={active('/attendance')}>
-                                    <i className="bi bi-clock-history"></i>
-                                    <span>Attendance</span>
-                                </Link>
-                            )}
+                         {(role === 'Employee' || role === 'Manager') && (
+    <Link href={route('attendance.index')} className={active('/attendance')}>
+        <i className="bi bi-clock-history"></i>
+        <span>Attendance</span>
+    </Link>
+)}
 
                             <div className="nav-section-title">MANAGEMENT</div>
 
@@ -65,10 +65,16 @@ export default function AppLayout({ children, title = 'Dashboard' }) {
                             )}
 
                             {role === 'Employee' && (
-                                <Link href={route('leave.index')} className={active('/leave')}>
-                                    <i className="bi bi-file-earmark-text"></i>
-                                    <span>My Leave Request</span>
-                                </Link>
+                                <>
+                                    <Link href={route('attendance.manage')} className={active('/attendance-management')}>
+                                        <i className="bi bi-list-check"></i>
+                                        <span>Attendance List</span>
+                                    </Link>
+                                    <Link href={route('leave.index')} className={active('/leave')}>
+                                        <i className="bi bi-file-earmark-text"></i>
+                                        <span>My Leave Request</span>
+                                    </Link>
+                                </>
                             )}
                         </div>
                     </nav>

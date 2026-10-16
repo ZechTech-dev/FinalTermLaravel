@@ -18,7 +18,7 @@ img { max-width: 100%; }
     width: calc(100% - 270px);
     min-height: 100vh;
     /* top padding leaves room for the fixed 70px header */
-    padding: 95px 40px 30px;
+    padding: 88px 24px 18px;
     background: #F5F7FB;
     display: flex;
     flex-direction: column;
